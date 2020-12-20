@@ -1,0 +1,245 @@
+					Tables Created for the Project!
+
+
+create table book(book_id int primary key,name varchar(40), isbn varchar(20) ,
+		 publisher varchar(30), edition varchar(10), price varchar(10), pages varchar(10),no_of_copies int);
+
+
+create table student(student_id varchar(10) primary key, name varchar(25), father varchar(25), 
+		    course varchar(10), branch varchar(10), year varchar(10), semester varchar(10));
+
+
+create table issueBook(book_id varchar(10), student_id varchar(10), bname varchar(40),
+ 			sname varchar(40), course varchar(20), branch varchar(10), dateOfIssue varchar(20),
+			foreign key(book_id) references books(book_id) ,
+			foreign key(student_id) references student(student_id));
+
+
+
+create table returnBook(book_id varchar(10), student_id varchar(10),
+			bname varchar(40), sname varchar(40),course varchar(20),
+			branch varchar(10), dateOfIssue DATE, dateOfReturn varchar(20),
+			foreign key(book_id) references books(book_id),
+			foreign key(student_id) references student(student_id));
+
+
+
+create table account(username varchar(20) primary key, name varchar(25) NOT NULL , 
+			password varchar(25) NOT NULL, sec_q varchar(25) NOT NULL, 
+			sec_ans varchar(25) NOT NULL);
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+How to Create Triggers!!
+
+create trigger [trigger_name] 
+[before | after]  
+{insert | update | delete}  
+on [table_name]  
+[for each row]  
+[trigger_body] 
+
+
+/ * Trigger for Reducing the Book Count!!* /
+create trigger decrement_book_copies 
+after insert on issuebook
+for each row
+update books set no_of_copies = no_of_copies -1 where book_id=new.book_id AND no_of_copies > 0 
+
+
+/ * Trigger for Incrementing the Book Count!!* /
+create trigger increment_book_copies 
+after insert on returnbook
+for each row
+update books set no_of_copies = no_of_copies + 1 where book_id=new.book_id 
+
+
+
+//Declare count int
+//Set count=0; --->Declaring Variables!! and Setting them.
+delimiter $$
+create trigger increase_copies
+after
+insert on library
+for each row
+begin
+
+end $$
+delimiter;
+
+
+delimiter$$
+create 
+	trigger msg_trigger before insert 
+	on bookies
+	for each row begin
+		insert into message values("Inserted a Row!!");
+	end$$
+delimiter;//Sets the ($$) Delimiter to " ; "
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Syantax for Creating Procedure :: 
+
+CREATE or REPLACE PROCEDURE name(parameters)
+IS
+variables;
+BEGIN
+//statements;
+END;
+
+The most important part is parameters. Parameters are used to pass values to the Procedure. There are 3 different types of parameters, they are as follows:
+
+    IN:
+    This is the Default Parameter for the procedure. It always recieves the values from calling program.
+    OUT:
+    This parameter always sends the values to the calling program.
+    IN OUT:
+    This parameter performs both the operations. It Receives value from as well as sends the values to the calling program.
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+/ * Stored Procedure for Setting the Books in Statistics Table!!* /
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE GETISSUEDBOOKS()
+BEGIN
+SELECT * FROM ISSUEBOOK;
+END$$
+
+DELIMITER ;
+
+/ * Stored Procedure for Setting the Books in Statistics Table!!* /
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE GETRETURNEDBOOKS()
+BEGIN
+SELECT * FROM RETURNBOOK;
+END$$
+
+DELIMITER ;
+
+/ * Stored Procedure for Displaying Students !* /
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE GETSTUDENTS()
+BEGIN
+SELECT * FROM STUDENT;
+END$$
+
+DELIMITER ;
+
+/ * Stored Procedure for Accounts (Forget Class) !* /
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE GETACCOUNT(IN UNAME VARCHAR(25))
+BEGIN
+SELECT * FROM ACCOUNT WHERE USERNAME=UNAME;
+END$$
+
+DELIMITER ;
+
+
+/ * Stored Procedure for getting Books !* /
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE GETBOOKS()
+BEGIN
+SELECT * FROM BOOKS;
+END$$
+
+DELIMITER ;
+
+
+
+/ * Stored Procedure for Deleting Certain Book !* /
+
+DELIMITER $$
+
+CREATE 	OR REPLACE PROCEDURE DELETEBOOK(IN BNAME VARCHAR(40))
+BEGIN
+DELETE FROM BOOKS WHERE name =BNAME;
+END$$
+
+DELIMITER ;
+
+----------------------------------------------------------------------------------------------
+Example for Stored Procedure!
+
+1)
+
+DELIMITER $$
+
+CREATE PROCEDURE GetEmployees()
+BEGIN
+	SELECT 
+		customerName, 
+		city, 
+		state, 
+		postalCode, 
+		country
+	FROM
+		customers
+	ORDER BY customerName;    
+END$$
+DELIMITER ;
+
+
+---------------------------------------------------------------------------------------------
+2)
+
+DELIMITER $$
+CREATE PROCEDURE GETCOUNT(OUT TOTAL_COUNT INT)
+BEGIN
+SELECT COUNT(*) INTO TOTAL_COUNT FROM EMPLOYEES; 	 	
+
+END $$
+DELIMITER ;
+
+
+
+CREATE PROCEDURE GetEmployees()
+BEGIN
+	SELECT 
+		*
+	FROM
+		employees
+	ORDER BY last_name;
+END$$
+DELIMITER ;
+---------------------------------------------------------------------------------------------
+3)
+DELIMITER $$
+CREATE 	OR REPLACE PROCEDURE GETSALARY(IN EMP_ID INT,OUT DEPT VARCHAR(30))
+BEGIN
+SELECT DEPARTMENT INTO DEPT FROM EMPLOYEES WHERE ID=EMP_ID;
+
+END$$
+DELIMITER ;
+
+
+
+
+Connecting Stored Procedure ::
+1.Stored Procedure is already created in the database!
+2.Create a Callabale Statement Object.
+3.INOUT | IN | OUT Parameter to be provided.
+4.Register every OUT parameter with JDBC Type!
+5.Execute Procedure Call.
+6.Get Result.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
